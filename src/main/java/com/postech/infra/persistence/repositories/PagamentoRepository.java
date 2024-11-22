@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface PagamentoRepository extends MongoRepository<PagamentoEntity, Long> {
 
-
     Optional<PagamentoEntity> getPagamentoEntityByIdPedido(Long id);
     Optional<PagamentoEntity> getPagamentoEntityByPagamentoId(String id);
 }

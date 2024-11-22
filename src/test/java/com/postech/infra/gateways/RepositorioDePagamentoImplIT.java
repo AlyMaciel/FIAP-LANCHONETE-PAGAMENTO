@@ -1,63 +1,61 @@
 package com.postech.infra.gateways;
 
+import com.postech.config.EmbeddedMongoConfig;
 import com.postech.domain.entities.Pagamento;
 import com.postech.infra.mappers.PagamentoMapper;
-import com.postech.infra.persistence.entities.PagamentoEntity;
 import com.postech.infra.persistence.repositories.PagamentoRepository;
 import com.postech.utils.PagamentoHelper;
+import de.flapdoodle.embed.mongo.MongodExecutable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.test.context.ActiveProfiles;
 
-
-import java.util.Optional;
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
-class RepositorioDePagamentoImplTeste {
 
-    @Mock
-    private PagamentoRepository repositorio;
+@Import(EmbeddedMongoConfig.class)
+@ActiveProfiles("test")
+@SpringBootTest
+@EnableMongoRepositories(basePackages = "com.postech.infra.persistence.repositories")
+public class RepositorioDePagamentoImplIT {
 
-    @Mock
-    private PagamentoMapper mapper;
+    @Autowired
+    private MongodExecutable mongodExecutable;
 
-    @InjectMocks
-    private RepositorioDePagamentoImpl repositorioDePagamento;
+    @Autowired
+    private PagamentoRepository pagamentoRepository;
 
-    AutoCloseable openMocks;
+    @Autowired
+    private PagamentoMapper pagamentoMapper;
+
+    @Autowired
+    private RepositorioDePagamentoImpl repositorioDePagamentoImpl;
 
 
     @BeforeEach
-    void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
+    void setUp() throws IOException {
+        mongodExecutable.start();
+
     }
 
     @AfterEach
-    void tearDown() throws Exception {
-        openMocks.close();
+    void tearDown() {
+        mongodExecutable.stop();
     }
+
 
     @Test
     void deveSalvarPagamento(){
         Pagamento pagamento = PagamentoHelper.gerarPagamento();
 
-        PagamentoEntity pagamentoEntity = PagamentoHelper.gerarPagamentoEntidade();
-
-        when(mapper.paraEntidade(any(Pagamento.class))).thenReturn(pagamentoEntity);
-
-        when(repositorio.save(any(PagamentoEntity.class))).thenReturn(pagamentoEntity);
-
-        when(mapper.paraDominio(any(PagamentoEntity.class))).thenReturn(pagamento);
-
-        var pagamentoSalvo = repositorioDePagamento.salvaPagamento(pagamento);
-
-        verify(repositorio, times(1)).save(any(PagamentoEntity.class));
+        var pagamentoSalvo = repositorioDePagamentoImpl.salvaPagamento(pagamento);
 
         assertThat(pagamentoSalvo)
                 .isInstanceOf(Pagamento.class)
@@ -100,15 +98,9 @@ class RepositorioDePagamentoImplTeste {
     void deveConsultarPagamentoPorIdPedido() {
         Pagamento pagamento = PagamentoHelper.gerarPagamento();
 
-        PagamentoEntity pagamentoEntity = PagamentoHelper.gerarPagamentoEntidade();
+        repositorioDePagamentoImpl.salvaPagamento(pagamento);
 
-        when(repositorio.getPagamentoEntityByIdPedido(any(Long.class))).thenReturn(Optional.of(pagamentoEntity));
-
-        when(mapper.paraDominio(any(PagamentoEntity.class))).thenReturn(pagamento);
-
-        var pagamentoConsultado = repositorioDePagamento.consultaPagamentoPorIdPedido(pagamento.getIdPedido());
-
-        verify(repositorio, times(1)).getPagamentoEntityByIdPedido(pagamento.getIdPedido());
+        var pagamentoConsultado = repositorioDePagamentoImpl.consultaPagamentoPorIdPedido(pagamento.getIdPedido());
 
         assertThat(pagamentoConsultado)
                 .isInstanceOf(Pagamento.class)
@@ -156,13 +148,7 @@ class RepositorioDePagamentoImplTeste {
     void deveRetornarNulo_QuandoConsultarPagamento_IdPedidoNaoExistente() {
         Pagamento pagamento = PagamentoHelper.gerarPagamento();
 
-        when(repositorio.getPagamentoEntityByIdPedido(any(Long.class))).thenReturn(Optional.empty());
-
-        when(mapper.paraDominio(any(PagamentoEntity.class))).thenReturn(pagamento);
-
-        var pagamentoConsultado = repositorioDePagamento.consultaPagamentoPorIdPedido(pagamento.getIdPedido());
-
-        verify(repositorio, times(1)).getPagamentoEntityByIdPedido(pagamento.getIdPedido());
+        var pagamentoConsultado = repositorioDePagamentoImpl.consultaPagamentoPorIdPedido(pagamento.getIdPedido());
 
         assertThat(pagamentoConsultado)
                 .isNull();
@@ -172,15 +158,9 @@ class RepositorioDePagamentoImplTeste {
     void deveConsultarPagamentoPorIdPagamento(){
         Pagamento pagamento = PagamentoHelper.gerarPagamento();
 
-        PagamentoEntity pagamentoEntity = PagamentoHelper.gerarPagamentoEntidade();
+        repositorioDePagamentoImpl.salvaPagamento(pagamento);
 
-        when(repositorio.getPagamentoEntityByPagamentoId(any(String.class))).thenReturn(Optional.of(pagamentoEntity));
-
-        when(mapper.paraDominio(any(PagamentoEntity.class))).thenReturn(pagamento);
-
-        var pagamentoConsultado = repositorioDePagamento.consultaPagamentoPorIdPagamento(pagamento.getPagamentoId());
-
-        verify(repositorio, times(1)).getPagamentoEntityByPagamentoId(pagamento.getPagamentoId());
+        var pagamentoConsultado = repositorioDePagamentoImpl.consultaPagamentoPorIdPagamento(pagamento.getPagamentoId());
 
         assertThat(pagamentoConsultado)
                 .isInstanceOf(Pagamento.class)
@@ -228,17 +208,9 @@ class RepositorioDePagamentoImplTeste {
     void deveRetornarNulo_QuandoConsultarPagamento_IdPagamentoNaoExistente() {
         Pagamento pagamento = PagamentoHelper.gerarPagamento();
 
-        when(repositorio.getPagamentoEntityByPagamentoId(any(String.class))).thenReturn(Optional.empty());
-
-        when(mapper.paraDominio(any(PagamentoEntity.class))).thenReturn(pagamento);
-
-        var pagamentoConsultado = repositorioDePagamento.consultaPagamentoPorIdPagamento(pagamento.getPagamentoId());
-
-        verify(repositorio, times(1)).getPagamentoEntityByPagamentoId(pagamento.getPagamentoId());
+        var pagamentoConsultado = repositorioDePagamentoImpl.consultaPagamentoPorIdPagamento(pagamento.getPagamentoId());
 
         assertThat(pagamentoConsultado)
                 .isNull();
     }
-
-
 }

@@ -1,5 +1,6 @@
 package com.postech.domain.entities;
 
+import com.google.common.base.Objects;
 import com.postech.domain.enums.EstadoPagamentoEnum;
 import com.postech.domain.enums.TipoMetodoPagamento;
 import com.postech.domain.enums.TipoPagamentoEnum;
@@ -103,5 +104,19 @@ public class Pagamento {
 
     public void setEstadoPagamento(EstadoPagamentoEnum estadoPagamento) {
         this.estadoPagamento = estadoPagamento;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pagamento pagamento = (Pagamento) o;
+        return Objects.equal(id, pagamento.id) && Objects.equal(valor, pagamento.valor) && estadoPagamento == pagamento.estadoPagamento && Objects.equal(idPedido, pagamento.idPedido) && Objects.equal(dataPagamento, pagamento.dataPagamento) && Objects.equal(dataCriacaoPagamento, pagamento.dataCriacaoPagamento) && tipoPagamento == pagamento.tipoPagamento && metodoPagamento == pagamento.metodoPagamento && Objects.equal(qrCode, pagamento.qrCode) && Objects.equal(pagamentoId, pagamento.pagamentoId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, valor, estadoPagamento, idPedido, dataPagamento, dataCriacaoPagamento, tipoPagamento, metodoPagamento, qrCode, pagamentoId);
     }
 }

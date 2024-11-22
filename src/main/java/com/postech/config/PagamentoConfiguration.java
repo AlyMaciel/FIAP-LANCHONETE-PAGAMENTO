@@ -9,6 +9,8 @@ import com.postech.infra.mercadopago.usecases.MercadoPagoUseCase;
 import com.postech.infra.persistence.repositories.PagamentoRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.repository.support.MongoRepositoryFactory;
 
 @Configuration
 public class PagamentoConfiguration {
