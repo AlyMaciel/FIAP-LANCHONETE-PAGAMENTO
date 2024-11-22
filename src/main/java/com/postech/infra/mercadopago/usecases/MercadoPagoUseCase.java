@@ -10,6 +10,7 @@ import com.postech.domain.enums.*;
 import com.postech.domain.exceptions.PagamentoException;
 import com.postech.domain.interfaces.PagamentoInterface;
 import com.postech.infra.dto.request.PedidoRequestDTO;
+import org.bson.types.ObjectId;
 
 import java.time.OffsetDateTime;
 

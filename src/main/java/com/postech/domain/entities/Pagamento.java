@@ -5,12 +5,13 @@ import com.postech.domain.enums.TipoMetodoPagamento;
 import com.postech.domain.enums.TipoPagamentoEnum;
 import com.postech.domain.exceptions.DominioException;
 import com.postech.domain.utils.ValidacaoUtils;
+import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
 
 public class Pagamento {
 
-    private Long id;
+    private ObjectId id;
 
     private Double valor;
 
@@ -31,7 +32,7 @@ public class Pagamento {
     private String pagamentoId;
 
 
-    public Pagamento(Long id, Double valor, EstadoPagamentoEnum estadoPagamento, Long idPedido, LocalDate dataPagamento, LocalDate dataCriacaoPagamento, TipoMetodoPagamento metodoPagamento, String qrCode, TipoPagamentoEnum tipoPagamento, String pagamentoId) {
+    public Pagamento(ObjectId id, Double valor, EstadoPagamentoEnum estadoPagamento, Long idPedido, LocalDate dataPagamento, LocalDate dataCriacaoPagamento, TipoMetodoPagamento metodoPagamento, String qrCode, TipoPagamentoEnum tipoPagamento, String pagamentoId) {
         this.id = id;
         this.valor = valor;
         this.estadoPagamento = estadoPagamento;
@@ -47,7 +48,7 @@ public class Pagamento {
 
     public void validaEntidade() throws DominioException {
         ValidacaoUtils.validaArgumentoNaoNulo(getEstadoPagamento(), "O estado de pagamento não pode estar vazio!");
-        ValidacaoUtils.validaArgumentoNaoNulo(getPedido(), "O pedido não pode estar vazio");
+        ValidacaoUtils.validaArgumentoNaoNulo(getIdPedido(), "O pedido não pode estar vazio");
         ValidacaoUtils.validaArgumentoNaoNulo(getMetodoPagamento(), "É necessário que tenha um método de pagamento");
         ValidacaoUtils.validaArgumentoNaoNulo(getTipoPagamento(), "É necessário que tenha um tipo de pagamento definido");
         ValidacaoUtils.validaArgumentoNaoNulo(getDataCriacaoPagamento(), "É necessário que tenha uma data de criação de pagamento");
@@ -64,7 +65,7 @@ public class Pagamento {
         return qrCode;
     }
 
-    public Long getId() {
+    public ObjectId getId() {
         return id;
     }
 
@@ -76,7 +77,7 @@ public class Pagamento {
         return estadoPagamento;
     }
 
-    public Long getPedido() {
+    public Long getIdPedido() {
         return idPedido;
     }
 
