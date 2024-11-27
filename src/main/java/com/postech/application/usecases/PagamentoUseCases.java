@@ -31,8 +31,8 @@ public class PagamentoUseCases {
     }
 
 
-    public EstadoPagamentoEnum getStatusPagamento(Long idProduto){
-        Pagamento pagamento = repositorio.consultaPagamentoPorIdPedido(idProduto);
+    public EstadoPagamentoEnum getStatusPagamento(Long idPedido){
+        Pagamento pagamento = repositorio.consultaPagamentoPorIdPedido(idPedido);
 
         if(pagamento == null){
             throw new PagamentoException(ErroPagamentoEnum.PAGAMENTO_NAO_ENCONTRADO_POR_ID_PEDIDO);
@@ -45,7 +45,7 @@ public class PagamentoUseCases {
         Pagamento pagamento = repositorio.consultaPagamentoPorIdPagamento(id);
 
         if(pagamento == null){
-            throw new PagamentoException(ErroPagamentoEnum.PAGAMENTO_NAO_ENCONTRADO_POR_ID_PEDIDO);
+            throw new PagamentoException(ErroPagamentoEnum.PAGAMENTO_NAO_ENCONTRADO_POR_ID_PAGAMENTO);
         }
 
         return pagamento;

@@ -37,16 +37,18 @@ public class EmbeddedMongoConfig {
 
     @Bean
     public MongodExecutable mongodExecutable() throws IOException {
+        System.out.println("Iniciando MongoDB Embutido...");
         ImmutableMongodConfig mongodConfig = MongodConfig
                 .builder()
-                .isShardServer(true)
                 .version(Version.Main.PRODUCTION)
                 .net(new Net(ip, port, Network.localhostIsIPv6()))
                 .build();
 
         MongodStarter starter = MongodStarter.getDefaultInstance();
+        MongodExecutable executable = starter.prepare(mongodConfig);
 
-        return starter.prepare(mongodConfig);
+        System.out.println("MongoDB Embutido Configurado em " + ip + ":" + port);
+        return executable;
     }
 }
 

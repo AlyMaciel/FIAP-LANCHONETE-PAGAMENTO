@@ -18,9 +18,6 @@ public class MercadoPagoUseCase implements PagamentoInterface {
 
     private static final TipoPagamentoEnum TIPO_PAGAMENTO = TipoPagamentoEnum.MERCADO_PAGO;
 
-    public MercadoPagoUseCase() {
-    }
-
     @Override
     public Pagamento criarPagamento(PedidoRequestDTO pedidoDTO) {
         try{
@@ -33,17 +30,25 @@ public class MercadoPagoUseCase implements PagamentoInterface {
                     .notificationUrl(null)
                     .build();
 
-            PaymentClient paymentClient = new PaymentClient();
+            PaymentClient paymentClient = getPaymentClient();
 
             Payment payment = paymentClient.create(paymentCreateRequest);
 
             return new Pagamento(null, payment.getTransactionAmount().doubleValue(),
                     EstadoPagamentoEnum.PENDENTE_PAGAMENTO, pedidoDTO.getId(), null, payment.getDateCreated().toLocalDate(),
-                    TipoMetodoPagamento.PIX, payment.getPointOfInteraction().getTransactionData().getQrCode(), TIPO_PAGAMENTO,
+                    TipoMetodoPagamento.PIX, getQRCode(payment), TIPO_PAGAMENTO,
                     payment.getId().toString());
         } catch (Exception e){
             throw new PagamentoException(ErroPagamentoEnum.ERRO_CRIAR_PAGAMENTO);
         }
+    }
+
+    protected PaymentClient getPaymentClient() {
+        return new PaymentClient();
+    }
+
+    protected String getQRCode(Payment payment) {
+        return payment.getPointOfInteraction().getTransactionData().getQrCode();
     }
 
 

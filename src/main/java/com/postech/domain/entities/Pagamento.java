@@ -53,8 +53,8 @@ public class Pagamento {
         ValidacaoUtils.validaArgumentoNaoNulo(getMetodoPagamento(), "É necessário que tenha um método de pagamento");
         ValidacaoUtils.validaArgumentoNaoNulo(getTipoPagamento(), "É necessário que tenha um tipo de pagamento definido");
         ValidacaoUtils.validaArgumentoNaoNulo(getDataCriacaoPagamento(), "É necessário que tenha uma data de criação de pagamento");
-        ValidacaoUtils.validaValorPositivo(getValor(), "O valor do pagamento não pode ser negativo!");
         ValidacaoUtils.validaArgumentoNaoNulo(getValor(), "O valor do pagamento não pode ser nulo");
+        ValidacaoUtils.validaValorPositivo(getValor(), "O valor do pagamento não pode ser negativo!");
     }
 
 
@@ -118,5 +118,20 @@ public class Pagamento {
     @Override
     public int hashCode() {
         return Objects.hashCode(id, valor, estadoPagamento, idPedido, dataPagamento, dataCriacaoPagamento, tipoPagamento, metodoPagamento, qrCode, pagamentoId);
+    }
+
+    @Override
+    public String toString() {
+        return "Pagamento{" +
+                "valor=" + valor +
+                ", estadoPagamento=" + estadoPagamento +
+                ", idPedido=" + idPedido +
+                ", dataPagamento=" + dataPagamento +
+                ", dataCriacaoPagamento=" + dataCriacaoPagamento +
+                ", tipoPagamento=" + tipoPagamento +
+                ", metodoPagamento=" + metodoPagamento +
+                ", qrCode='" + qrCode + '\'' +
+                ", pagamentoId='" + pagamentoId + '\'' +
+                '}';
     }
 }

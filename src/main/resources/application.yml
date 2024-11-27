@@ -2,7 +2,7 @@
 server:
   port: ${PORT:8080}
   servlet:
-    context-path: "/lanchonete/pagamento/v1"
+    context-path: "/lanchonete/v1"
 
 spring:
   application:

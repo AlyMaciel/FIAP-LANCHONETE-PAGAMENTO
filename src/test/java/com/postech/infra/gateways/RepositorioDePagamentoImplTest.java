@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class RepositorioDePagamentoImplTeste {
+class RepositorioDePagamentoImplTest {
 
     @Mock
     private PagamentoRepository repositorio;
