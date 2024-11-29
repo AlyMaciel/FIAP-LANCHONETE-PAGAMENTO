@@ -4,12 +4,11 @@ import com.postech.config.EmbeddedMongoConfig;
 import com.postech.infra.persistence.entities.PagamentoEntity;
 import com.postech.utils.PagamentoHelper;
 import de.flapdoodle.embed.mongo.MongodExecutable;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -29,16 +28,26 @@ class PagamentoRepositoryIT {
     @Autowired
     private PagamentoRepository pagamentoRepository;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
-    @BeforeEach
-    void setUp() throws IOException {
-        mongodExecutable.start();
+    @BeforeAll
+    static void startMongo(@Autowired MongodExecutable mongodExecutable) throws Exception {
+        if (mongodExecutable != null) {
+            mongodExecutable.start();
+        }
+    }
 
+    @AfterAll
+    static void stopMongo(@Autowired MongodExecutable mongodExecutable) {
+        if (mongodExecutable != null) {
+            mongodExecutable.stop();
+        }
     }
 
     @AfterEach
     void tearDown() {
-        mongodExecutable.stop();
+        mongoTemplate.getDb().drop();  // Limpa o banco de dados
     }
 
     @Test

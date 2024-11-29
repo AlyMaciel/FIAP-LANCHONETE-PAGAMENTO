@@ -1,8 +1,10 @@
 package com.postech.config;
 
+import com.postech.application.client.PedidoClient;
 import com.postech.application.gateways.RepositorioDePagamentoGateway;
 import com.postech.application.usecases.PagamentoUseCases;
 import com.postech.domain.interfaces.PagamentoInterface;
+import com.postech.infra.client.PedidoClienteImpl;
 import com.postech.infra.gateways.RepositorioDePagamentoImpl;
 import com.postech.infra.mappers.PagamentoMapper;
 import com.postech.infra.mercadopago.usecases.MercadoPagoUseCase;
@@ -16,8 +18,8 @@ import org.springframework.data.mongodb.repository.support.MongoRepositoryFactor
 public class PagamentoConfiguration {
 
     @Bean
-    PagamentoUseCases pagamentoUseCases(RepositorioDePagamentoGateway repositorio, PagamentoInterface pagamentoExternoInterface) {
-        return new PagamentoUseCases(repositorio, pagamentoExternoInterface);
+    PagamentoUseCases pagamentoUseCases(RepositorioDePagamentoGateway repositorio, PagamentoInterface pagamentoExternoInterface, PedidoClient pedidoCliente) {
+        return new PagamentoUseCases(repositorio, pagamentoExternoInterface, pedidoCliente);
     }
 
     @Bean

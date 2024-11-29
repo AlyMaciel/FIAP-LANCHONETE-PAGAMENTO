@@ -1,5 +1,6 @@
 package com.postech.application.usecases;
 
+import com.postech.application.client.PedidoClient;
 import com.postech.application.gateways.RepositorioDePagamentoGateway;
 import com.postech.config.EmbeddedMongoConfig;
 import com.postech.domain.entities.Pagamento;
@@ -11,20 +12,19 @@ import com.postech.infra.dto.request.ClienteRequestDTO;
 import com.postech.infra.dto.request.PedidoRequestDTO;
 import com.postech.utils.PagamentoHelper;
 import de.flapdoodle.embed.mongo.MongodExecutable;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
 
 @Import(EmbeddedMongoConfig.class)
 @ActiveProfiles("test")
@@ -32,24 +32,37 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @EnableMongoRepositories(basePackages = "com.postech.infra.persistence.repositories")
 class PagamentoUseCasesIT {
 
+
     @Autowired
-    private MongodExecutable mongodExecutable;
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     private RepositorioDePagamentoGateway repositorioDePagamentoImpl;
 
+    @MockBean
+    private PedidoClient pedidoCliente;
+
     @Autowired
     private PagamentoUseCases pagamentoUseCases;
 
-    @BeforeEach
-    void setUp() throws IOException {
-        mongodExecutable.start();
 
+    @BeforeAll
+    static void startMongo(@Autowired MongodExecutable mongodExecutable) throws Exception {
+        if (mongodExecutable != null) {
+            mongodExecutable.start();
+        }
     }
 
     @AfterEach
-    void tearDown() {
-        mongodExecutable.stop();
+    public void limpaBanco() {
+        mongoTemplate.getDb().drop();  // Limpa o banco de dados
+    }
+
+    @AfterAll
+    static void stopMongo(@Autowired MongodExecutable mongodExecutable) {
+        if (mongodExecutable != null) {
+            mongodExecutable.stop();
+        }
     }
 
     @Test
@@ -63,8 +76,8 @@ class PagamentoUseCasesIT {
                 .isNotNull();
 
         assertThat(pagamentoSalvo)
-                .extracting(Pagamento::getValor)
-                .isEqualTo(pedidoRequestDTO.getValorTotal());
+                .extracting(Pagamento::getValor)  // Extrai o valor
+                .isEqualTo(pedidoRequestDTO.getValorTotal().doubleValue());
 
         assertThat(pagamentoSalvo)
                 .extracting(Pagamento::getEstadoPagamento)
@@ -182,6 +195,8 @@ class PagamentoUseCasesIT {
         var notificacaoPagamento = PagamentoHelper.gerarNotificacaoPagamentoPago();
 
         pagamentoUseCases.atualizaEstadoPagamento(notificacaoPagamento);
+
+        verify(pedidoCliente).enviaEstadoPagamento(1L, EstadoPagamentoEnum.PAGO, notificacaoPagamento.getDataAttPagamento());
 
         var pagamentoSalvo = repositorioDePagamentoImpl.consultaPagamentoPorIdPagamento(notificacaoPagamento.getPagamentoId());
 

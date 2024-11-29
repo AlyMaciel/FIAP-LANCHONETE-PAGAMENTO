@@ -1,5 +1,6 @@
 package com.postech.application.usecases;
 
+import com.postech.application.client.PedidoClient;
 import com.postech.application.gateways.RepositorioDePagamentoGateway;
 import com.postech.domain.entities.Pagamento;
 import com.postech.domain.enums.ErroPagamentoEnum;
@@ -31,6 +32,9 @@ class PagamentoUseCasesTest {
 
     @Mock
     private PagamentoInterface pagamentoExternoUseCase;
+
+    @Mock
+    private PedidoClient pedidoClient;
 
     @InjectMocks
     private PagamentoUseCases pagamentoUseCases;
@@ -223,6 +227,8 @@ class PagamentoUseCasesTest {
         verify(repositorio, times(1)).consultaPagamentoPorIdPagamento(notificacaoPagamento.getPagamentoId());
 
         verify(repositorio, times(1)).salvaPagamento(pagamento);
+
+        verify(pedidoClient, times(1)).enviaEstadoPagamento(1L, EstadoPagamentoEnum.PAGO, notificacaoPagamento.getDataAttPagamento());
 
         assertThat(pagamento)
                 .extracting(Pagamento::getEstadoPagamento)

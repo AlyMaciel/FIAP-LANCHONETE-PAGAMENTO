@@ -1,6 +1,8 @@
 package com.postech.application.usecases;
 
+import com.postech.application.client.PedidoClient;
 import com.postech.domain.interfaces.NotificacaoExternoInterface;
+import com.postech.infra.client.PedidoClienteImpl;
 import com.postech.utils.PagamentoHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

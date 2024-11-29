@@ -1,5 +1,6 @@
 package com.postech.application.usecases;
 
+import com.postech.application.client.PedidoClient;
 import com.postech.application.gateways.RepositorioDePagamentoGateway;
 import com.postech.domain.entities.Pagamento;
 import com.postech.domain.enums.ErroPagamentoEnum;
@@ -7,6 +8,7 @@ import com.postech.domain.enums.EstadoPagamentoEnum;
 import com.postech.domain.exceptions.PagamentoException;
 import com.postech.domain.interfaces.PagamentoInterface;
 import com.postech.application.utils.NotificacaoPagamento;
+import com.postech.infra.client.PedidoClienteImpl;
 import com.postech.infra.dto.request.PedidoRequestDTO;
 
 
@@ -16,9 +18,12 @@ public class PagamentoUseCases {
 
     private final PagamentoInterface pagamentoExternoUseCase;
 
-    public PagamentoUseCases(RepositorioDePagamentoGateway repositorio, PagamentoInterface pagamentoExternoUseCase) {
+    private final PedidoClient pedidoCliente;
+
+    public PagamentoUseCases(RepositorioDePagamentoGateway repositorio, PagamentoInterface pagamentoExternoUseCase, PedidoClient pedidoCliente) {
         this.repositorio = repositorio;
         this.pagamentoExternoUseCase = pagamentoExternoUseCase;
+        this.pedidoCliente = pedidoCliente;
     }
 
     public Pagamento criarPagamentoPix(PedidoRequestDTO pedido) {
@@ -58,5 +63,9 @@ public class PagamentoUseCases {
         pagamento.setDataPagamento(notificacaoPagamento.getDataAttPagamento());
 
         repositorio.salvaPagamento(pagamento);
+
+        if(pagamento.getEstadoPagamento().equals(EstadoPagamentoEnum.PAGO)) {
+            pedidoCliente.enviaEstadoPagamento(pagamento.getIdPedido(), EstadoPagamentoEnum.PAGO, pagamento.getDataPagamento());
+        }
     }
 }

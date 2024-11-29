@@ -1,18 +1,19 @@
 package com.postech.infra.controller;
 
+import com.postech.application.client.PedidoClient;
 import com.postech.config.EmbeddedMongoConfig;
 import com.postech.infra.dto.request.PagamentoRequestDTO;
 import com.postech.infra.persistence.repositories.PagamentoRepository;
 import com.postech.utils.PagamentoHelper;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,24 +28,40 @@ class PagamentoControllerIT {
     @LocalServerPort
     private int port;
 
+    @MockBean
+    private PedidoClient pedidoClient;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
     @Autowired
     private PagamentoRepository pagamentoRepository;
 
-    @Autowired
-    private MongodExecutable mongodExecutable;
+
 
     @BeforeEach
-    public void setup() throws IOException {
+    public void setup() {
         RestAssured.port = port;
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-        mongodExecutable.start();
+    }
+
+    @BeforeAll
+    static void startMongo(@Autowired MongodExecutable mongodExecutable) throws Exception {
+        if (mongodExecutable != null) {
+            mongodExecutable.start();
+        }
+    }
+
+    @AfterAll
+    static void stopMongo(@Autowired MongodExecutable mongodExecutable) {
+        if (mongodExecutable != null) {
+            mongodExecutable.stop();
+        }
     }
 
     @AfterEach
     void tearDown() {
-        pagamentoRepository.deleteAll();
-        mongodExecutable.stop();
-
+        mongoTemplate.getDb().drop();  // Limpa o banco de dados
     }
 
     @Test
