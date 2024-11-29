@@ -18,14 +18,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.IOException;
 
 import static io.restassured.RestAssured.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(EmbeddedMongoConfig.class)
 @ActiveProfiles("test")
-public class NotificacaoControllerIT {
+class NotificacaoControllerIT {
 
     @LocalServerPort
     private int port;
