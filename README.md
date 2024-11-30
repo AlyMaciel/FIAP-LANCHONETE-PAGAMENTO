@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/b43282c1-c933-4427-97ea-f1c658b6917a)# Tech Challenge - Sistema de Pagamento
+# Tech Challenge - Sistema de Pagamento
 
 O sistema tem como intuito fornecer o processo de operacionalização da pagamento de um pedido, oferecendo as funcionalidade de criar, atualizar e buscar um pagamento.
 
