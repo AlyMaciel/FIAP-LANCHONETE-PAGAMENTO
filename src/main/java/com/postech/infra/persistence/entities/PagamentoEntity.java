@@ -25,6 +25,7 @@ public class PagamentoEntity {
     @Id
     private ObjectId id;
 
+    @Field("valor")
     private Double valor;
 
     @Field("estado_pagamento")

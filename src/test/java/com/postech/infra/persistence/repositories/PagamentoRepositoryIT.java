@@ -2,7 +2,7 @@ package com.postech.infra.persistence.repositories;
 
 import com.postech.config.EmbeddedMongoConfig;
 import com.postech.infra.persistence.entities.PagamentoEntity;
-import com.postech.utils.PagamentoHelper;
+import com.postech.utils.TesteHelper;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +12,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.IOException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Import(EmbeddedMongoConfig.class)
@@ -21,9 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = PagamentoRepository.class)
 @EnableMongoRepositories
 class PagamentoRepositoryIT {
-
-    @Autowired
-    private MongodExecutable mongodExecutable;
 
     @Autowired
     private PagamentoRepository pagamentoRepository;
@@ -53,7 +48,7 @@ class PagamentoRepositoryIT {
     @Test
     void devePegarPagamentoPorIdPedido() {
         // Arrange
-        var pagamento = PagamentoHelper.gerarPagamentoEntidade();
+        var pagamento = TesteHelper.gerarPagamentoEntidade();
 
         pagamentoRepository.save(pagamento);
 
@@ -101,7 +96,7 @@ class PagamentoRepositoryIT {
     @Test
     void devePegarPagamentoPorPagamentoId(){
         // Arrange
-        var pagamento = PagamentoHelper.gerarPagamentoEntidade();
+        var pagamento = TesteHelper.gerarPagamentoEntidade();
 
         pagamentoRepository.save(pagamento);
 

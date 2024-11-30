@@ -7,9 +7,7 @@ import com.postech.domain.enums.EstadoPagamentoEnum;
 import com.postech.domain.enums.TipoMetodoPagamento;
 import com.postech.domain.enums.TipoPagamentoEnum;
 import com.postech.domain.exceptions.PagamentoException;
-import com.postech.infra.dto.request.ClienteRequestDTO;
-import com.postech.infra.dto.request.PedidoRequestDTO;
-import com.postech.utils.PagamentoHelper;
+import com.postech.utils.TesteHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,10 +59,10 @@ class MercadoPagoUseCaseTest {
         when(paymentClient.create(any(PaymentCreateRequest.class))).thenReturn(mockPayment);
 
         // Dados do pedido
-        var pedidoRequestDTO = PagamentoHelper.gerarPedidoRequest();
+        var criarPagamentoRequestDTO = TesteHelper.gerarCriarPagamentoRequestDTO();
 
         // Chamada do método de teste
-        var pagamento = mercadoPagoUseCase.criarPagamento(pedidoRequestDTO);
+        var pagamento = mercadoPagoUseCase.criarPagamento(criarPagamentoRequestDTO);
 
         // Verificações
         assertNotNull(pagamento);
@@ -86,11 +84,11 @@ class MercadoPagoUseCaseTest {
         when(paymentClient.create(any(PaymentCreateRequest.class))).thenThrow(new RuntimeException("Erro no Mercado Pago"));
 
         // Dados do pedido
-        var pedidoRequestDTO = PagamentoHelper.gerarPedidoRequest();
+        var criarPagamentoRequestDTO = TesteHelper.gerarCriarPagamentoRequestDTO();
 
         // Chamada do método e verificação de exceção
         PagamentoException exception = assertThrows(PagamentoException.class, () ->
-                mercadoPagoUseCase.criarPagamento(pedidoRequestDTO)
+                mercadoPagoUseCase.criarPagamento(criarPagamentoRequestDTO)
         );
 
         assertEquals("ERRO_CRIAR_PAGAMENTO", exception.getErro().name());

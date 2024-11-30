@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ClienteRequestDTO {
+public class CriarPagamentoRequestDTO {
 
-    String email;
+    Long idPedido;
 
-    String nome;
+    Double valorTotal;
 
-    String cpf;
+    Long idCliente;
 }

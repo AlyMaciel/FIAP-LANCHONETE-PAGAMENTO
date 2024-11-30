@@ -8,8 +8,7 @@ import com.postech.domain.enums.EstadoPagamentoEnum;
 import com.postech.domain.exceptions.PagamentoException;
 import com.postech.domain.interfaces.PagamentoInterface;
 import com.postech.application.utils.NotificacaoPagamento;
-import com.postech.infra.client.PedidoClienteImpl;
-import com.postech.infra.dto.request.PedidoRequestDTO;
+import com.postech.infra.dto.request.CriarPagamentoRequestDTO;
 
 
 public class PagamentoUseCases {
@@ -26,9 +25,9 @@ public class PagamentoUseCases {
         this.pedidoCliente = pedidoCliente;
     }
 
-    public Pagamento criarPagamentoPix(PedidoRequestDTO pedido) {
+    public Pagamento criarPagamentoPix(CriarPagamentoRequestDTO criarPagamentoRequestDTO) {
         try{
-            Pagamento pagamento = pagamentoExternoUseCase.criarPagamento(pedido);
+            Pagamento pagamento = pagamentoExternoUseCase.criarPagamento(criarPagamentoRequestDTO);
             return repositorio.salvaPagamento(pagamento);
         }catch (Exception e){
             throw new PagamentoException(ErroPagamentoEnum.ERRO_CRIAR_PAGAMENTO);

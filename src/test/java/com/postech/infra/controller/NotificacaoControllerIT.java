@@ -3,7 +3,7 @@ package com.postech.infra.controller;
 import com.postech.application.client.PedidoClient;
 import com.postech.config.EmbeddedMongoConfig;
 import com.postech.infra.persistence.repositories.PagamentoRepository;
-import com.postech.utils.PagamentoHelper;
+import com.postech.utils.TesteHelper;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
@@ -68,7 +68,7 @@ class NotificacaoControllerIT {
     void devePermitirAtualizarPagamento() {
         var notificacaoRequest = "{\"action\":\"payment.updated\",\"date_created\":\"2024-07-29T22:00:00\",\"data\":{\"id\":\"1\"}}";
 
-        var pagamento = PagamentoHelper.gerarPagamentoEntidade();
+        var pagamento = TesteHelper.gerarPagamentoEntidade();
 
         pagamentoRepository.save(pagamento);
 

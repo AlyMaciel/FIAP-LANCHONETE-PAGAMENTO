@@ -5,17 +5,14 @@ import com.postech.domain.entities.Pagamento;
 import com.postech.domain.enums.EstadoPagamentoEnum;
 import com.postech.domain.enums.TipoMetodoPagamento;
 import com.postech.domain.enums.TipoPagamentoEnum;
-import com.postech.infra.dto.request.ClienteRequestDTO;
-import com.postech.infra.dto.request.PagamentoRequestDTO;
-import com.postech.infra.dto.request.PedidoRequestDTO;
+import com.postech.infra.dto.request.CriarPagamentoRequestDTO;
 import com.postech.infra.dto.response.PagamentoResponseDTO;
 import com.postech.infra.persistence.entities.PagamentoEntity;
 import org.bson.types.ObjectId;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public abstract class PagamentoHelper {
+public abstract class TesteHelper {
 
     public static PagamentoEntity gerarPagamentoEntidade() {
         return new PagamentoEntity(new ObjectId(), 100.0, EstadoPagamentoEnum.PAGO, 1L, LocalDate.now(), LocalDate.now(), TipoMetodoPagamento.PIX, "123456", "1", TipoPagamentoEnum.MERCADO_PAGO);
@@ -34,17 +31,14 @@ public abstract class PagamentoHelper {
     }
 
 
-    public static PedidoRequestDTO gerarPedidoRequest(){
-        return new PedidoRequestDTO(1L, BigDecimal.valueOf(5.0), new ClienteRequestDTO("teste@teste.com", "Test", "19119119100"));
-    }
 
-    public static PagamentoRequestDTO gerarPagamentoRequest(){
-        return new PagamentoRequestDTO(gerarPedidoRequest(), TipoPagamentoEnum.MERCADO_PAGO);
+    public static CriarPagamentoRequestDTO gerarCriarPagamentoRequestDTO(){
+        return new CriarPagamentoRequestDTO(1L, 5.0, 1L);
     }
 
 
     public static PagamentoResponseDTO gerarPagamentoResponse(){
-        return new PagamentoResponseDTO(100.0, EstadoPagamentoEnum.PAGO, LocalDate.now(), LocalDate.now(), TipoPagamentoEnum.MERCADO_PAGO, TipoMetodoPagamento.PIX, "qrCode", "123456");
+        return new PagamentoResponseDTO(100.0, EstadoPagamentoEnum.PAGO, LocalDate.now(), LocalDate.now(), TipoPagamentoEnum.MERCADO_PAGO, TipoMetodoPagamento.PIX, "qrCode", "123456", 1L);
     }
 
 

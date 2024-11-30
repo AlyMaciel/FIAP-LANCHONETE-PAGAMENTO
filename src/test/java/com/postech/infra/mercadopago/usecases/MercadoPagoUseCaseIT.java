@@ -1,23 +1,18 @@
 package com.postech.infra.mercadopago.usecases;
 
 import com.postech.domain.enums.EstadoPagamentoEnum;
-import com.postech.infra.dto.request.ClienteRequestDTO;
-import com.postech.infra.dto.request.PedidoRequestDTO;
-import com.postech.utils.PagamentoHelper;
+import com.postech.utils.TesteHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class MercadoPagoUseCaseIT {
+class MercadoPagoUseCaseIT {
 
     private MercadoPagoUseCase mercadoPagoUseCase;
 
@@ -28,10 +23,10 @@ public class MercadoPagoUseCaseIT {
 
     @Test
     void testCriarPagamento_ComIntegracaoReal() {
-        var pedidoRequestDTO = PagamentoHelper.gerarPedidoRequest();
+        var criarPagamentoRequestDTO = TesteHelper.gerarCriarPagamentoRequestDTO();
 
         // Chamada do método
-        var pagamento = mercadoPagoUseCase.criarPagamento(pedidoRequestDTO);
+        var pagamento = mercadoPagoUseCase.criarPagamento(criarPagamentoRequestDTO);
 
         // Validações
         assertNotNull(pagamento);

@@ -32,4 +32,6 @@ public class PagamentoResponseDTO {
 
     private String pagamentoId;
 
+    private Long idPedido;
+
 }

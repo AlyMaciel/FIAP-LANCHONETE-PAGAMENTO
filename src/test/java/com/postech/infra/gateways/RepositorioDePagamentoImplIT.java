@@ -2,9 +2,7 @@ package com.postech.infra.gateways;
 
 import com.postech.config.EmbeddedMongoConfig;
 import com.postech.domain.entities.Pagamento;
-import com.postech.infra.mappers.PagamentoMapper;
-import com.postech.infra.persistence.repositories.PagamentoRepository;
-import com.postech.utils.PagamentoHelper;
+import com.postech.utils.TesteHelper;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @SpringBootTest
 @EnableMongoRepositories(basePackages = "com.postech.infra.persistence.repositories")
-public class RepositorioDePagamentoImplIT {
+class RepositorioDePagamentoImplIT {
 
 
     @Autowired
@@ -53,7 +51,7 @@ public class RepositorioDePagamentoImplIT {
 
     @Test
     void deveSalvarPagamento(){
-        Pagamento pagamento = PagamentoHelper.gerarPagamento();
+        Pagamento pagamento = TesteHelper.gerarPagamento();
 
         var pagamentoSalvo = repositorioDePagamentoImpl.salvaPagamento(pagamento);
 
@@ -96,7 +94,7 @@ public class RepositorioDePagamentoImplIT {
 
     @Test
     void deveConsultarPagamentoPorIdPedido() {
-        Pagamento pagamento = PagamentoHelper.gerarPagamento();
+        Pagamento pagamento = TesteHelper.gerarPagamento();
 
         repositorioDePagamentoImpl.salvaPagamento(pagamento);
 
@@ -146,7 +144,7 @@ public class RepositorioDePagamentoImplIT {
 
     @Test
     void deveRetornarNulo_QuandoConsultarPagamento_IdPedidoNaoExistente() {
-        Pagamento pagamento = PagamentoHelper.gerarPagamento();
+        Pagamento pagamento = TesteHelper.gerarPagamento();
 
         var pagamentoConsultado = repositorioDePagamentoImpl.consultaPagamentoPorIdPedido(pagamento.getIdPedido());
 
@@ -156,7 +154,7 @@ public class RepositorioDePagamentoImplIT {
 
     @Test
     void deveConsultarPagamentoPorIdPagamento(){
-        Pagamento pagamento = PagamentoHelper.gerarPagamento();
+        Pagamento pagamento = TesteHelper.gerarPagamento();
 
         repositorioDePagamentoImpl.salvaPagamento(pagamento);
 
@@ -206,7 +204,7 @@ public class RepositorioDePagamentoImplIT {
 
     @Test
     void deveRetornarNulo_QuandoConsultarPagamento_IdPagamentoNaoExistente() {
-        Pagamento pagamento = PagamentoHelper.gerarPagamento();
+        Pagamento pagamento = TesteHelper.gerarPagamento();
 
         var pagamentoConsultado = repositorioDePagamentoImpl.consultaPagamentoPorIdPagamento(pagamento.getPagamentoId());
 

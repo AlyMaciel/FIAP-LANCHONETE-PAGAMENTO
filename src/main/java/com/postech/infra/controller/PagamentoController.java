@@ -3,7 +3,7 @@ package com.postech.infra.controller;
 import com.postech.application.usecases.PagamentoUseCases;
 import com.postech.domain.entities.Pagamento;
 import com.postech.domain.enums.EstadoPagamentoEnum;
-import com.postech.infra.dto.request.PagamentoRequestDTO;
+import com.postech.infra.dto.request.CriarPagamentoRequestDTO;
 import com.postech.infra.mappers.PagamentoMapper;
 import com.postech.infra.resource.PagamentoResource;
 import org.springframework.http.HttpStatus;
@@ -23,17 +23,17 @@ public class PagamentoController implements PagamentoResource {
     }
 
     @Override
-    public ResponseEntity<Object> criarPagamento(PagamentoRequestDTO pagamentoRequestDTO) {
-        Pagamento pagamento = useCases.criarPagamentoPix(pagamentoRequestDTO.getPedidoDTO());
+    public ResponseEntity<Object> criarPagamento(CriarPagamentoRequestDTO criarPagamentoRequestDTO) {
+        Pagamento pagamento = useCases.criarPagamentoPix(criarPagamentoRequestDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.paraResponseDTO(pagamento));
     }
 
     @Override
-    public ResponseEntity<Object> getEstadoPagamento(PagamentoRequestDTO pagamentoRequestDTO) {
+    public ResponseEntity<Object> getEstadoPagamento(Long idPedido) {
 
-        EstadoPagamentoEnum estadoPagamento = useCases.getStatusPagamento(pagamentoRequestDTO.getPedidoDTO().getId());
+        EstadoPagamentoEnum estadoPagamento = useCases.getStatusPagamento(idPedido);
 
-        return ResponseEntity.ok().body("O estado do pagamento informado é: " + estadoPagamento);
+        return ResponseEntity.ok().body(estadoPagamento);
     }
 }

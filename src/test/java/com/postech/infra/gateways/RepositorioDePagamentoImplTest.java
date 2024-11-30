@@ -4,7 +4,7 @@ import com.postech.domain.entities.Pagamento;
 import com.postech.infra.mappers.PagamentoMapper;
 import com.postech.infra.persistence.entities.PagamentoEntity;
 import com.postech.infra.persistence.repositories.PagamentoRepository;
-import com.postech.utils.PagamentoHelper;
+import com.postech.utils.TesteHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,9 +45,9 @@ class RepositorioDePagamentoImplTest {
 
     @Test
     void deveSalvarPagamento(){
-        Pagamento pagamento = PagamentoHelper.gerarPagamento();
+        Pagamento pagamento = TesteHelper.gerarPagamento();
 
-        PagamentoEntity pagamentoEntity = PagamentoHelper.gerarPagamentoEntidade();
+        PagamentoEntity pagamentoEntity = TesteHelper.gerarPagamentoEntidade();
 
         when(mapper.paraEntidade(any(Pagamento.class))).thenReturn(pagamentoEntity);
 
@@ -98,9 +98,9 @@ class RepositorioDePagamentoImplTest {
 
     @Test
     void deveConsultarPagamentoPorIdPedido() {
-        Pagamento pagamento = PagamentoHelper.gerarPagamento();
+        Pagamento pagamento = TesteHelper.gerarPagamento();
 
-        PagamentoEntity pagamentoEntity = PagamentoHelper.gerarPagamentoEntidade();
+        PagamentoEntity pagamentoEntity = TesteHelper.gerarPagamentoEntidade();
 
         when(repositorio.getPagamentoEntityByIdPedido(any(Long.class))).thenReturn(Optional.of(pagamentoEntity));
 
@@ -154,7 +154,7 @@ class RepositorioDePagamentoImplTest {
 
     @Test
     void deveRetornarNulo_QuandoConsultarPagamento_IdPedidoNaoExistente() {
-        Pagamento pagamento = PagamentoHelper.gerarPagamento();
+        Pagamento pagamento = TesteHelper.gerarPagamento();
 
         when(repositorio.getPagamentoEntityByIdPedido(any(Long.class))).thenReturn(Optional.empty());
 
@@ -170,9 +170,9 @@ class RepositorioDePagamentoImplTest {
 
     @Test
     void deveConsultarPagamentoPorIdPagamento(){
-        Pagamento pagamento = PagamentoHelper.gerarPagamento();
+        Pagamento pagamento = TesteHelper.gerarPagamento();
 
-        PagamentoEntity pagamentoEntity = PagamentoHelper.gerarPagamentoEntidade();
+        PagamentoEntity pagamentoEntity = TesteHelper.gerarPagamentoEntidade();
 
         when(repositorio.getPagamentoEntityByPagamentoId(any(String.class))).thenReturn(Optional.of(pagamentoEntity));
 
@@ -226,7 +226,7 @@ class RepositorioDePagamentoImplTest {
 
     @Test
     void deveRetornarNulo_QuandoConsultarPagamento_IdPagamentoNaoExistente() {
-        Pagamento pagamento = PagamentoHelper.gerarPagamento();
+        Pagamento pagamento = TesteHelper.gerarPagamento();
 
         when(repositorio.getPagamentoEntityByPagamentoId(any(String.class))).thenReturn(Optional.empty());
 

@@ -1,9 +1,7 @@
 package com.postech.application.usecases;
 
-import com.postech.application.client.PedidoClient;
 import com.postech.domain.interfaces.NotificacaoExternoInterface;
-import com.postech.infra.client.PedidoClienteImpl;
-import com.postech.utils.PagamentoHelper;
+import com.postech.utils.TesteHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +39,7 @@ class NotificacaoUseCasesTest {
         // Arrange
         var json = "json";
 
-        var notificacaoPagamento = PagamentoHelper.gerarNotificacaoPagamentoPago();
+        var notificacaoPagamento = TesteHelper.gerarNotificacaoPagamentoPago();
 
         when(notificacaoExternoInterface.geraNotificaoPagamento(json)).thenReturn(notificacaoPagamento);
 
@@ -55,7 +53,7 @@ class NotificacaoUseCasesTest {
         // Arrange
         var json = "json";
 
-        var notificacaoPagamento = PagamentoHelper.gerarNotificacaoPagamentoPendentePagamento();
+        var notificacaoPagamento = TesteHelper.gerarNotificacaoPagamentoPendentePagamento();
 
         when(notificacaoExternoInterface.geraNotificaoPagamento(json)).thenReturn(notificacaoPagamento);
 

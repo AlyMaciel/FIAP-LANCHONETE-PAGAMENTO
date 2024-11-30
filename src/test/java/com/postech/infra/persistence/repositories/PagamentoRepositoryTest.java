@@ -1,7 +1,7 @@
 package com.postech.infra.persistence.repositories;
 
 import com.postech.infra.persistence.entities.PagamentoEntity;
-import com.postech.utils.PagamentoHelper;
+import com.postech.utils.TesteHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class PagamentoRepositoryTest {
     @Test
     void devePegarPagamentoPorIdPedido() {
         // Arrange
-        var pagamento = PagamentoHelper.gerarPagamentoEntidade();
+        var pagamento = TesteHelper.gerarPagamentoEntidade();
 
         when(pagamentoRepository.getPagamentoEntityByIdPedido(any(Long.class))).thenReturn(Optional.of(pagamento));
         // Act
@@ -83,7 +83,7 @@ class PagamentoRepositoryTest {
     @Test
     void devePegarPagamentoPorPagamentoId(){
         // Arrange
-        var pagamento = PagamentoHelper.gerarPagamentoEntidade();
+        var pagamento = TesteHelper.gerarPagamentoEntidade();
 
         when(pagamentoRepository.getPagamentoEntityByIdPedido(any(Long.class))).thenReturn(Optional.of(pagamento));
         // Act

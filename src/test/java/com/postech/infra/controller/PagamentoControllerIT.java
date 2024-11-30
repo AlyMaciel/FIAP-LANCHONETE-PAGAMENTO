@@ -2,9 +2,8 @@ package com.postech.infra.controller;
 
 import com.postech.application.client.PedidoClient;
 import com.postech.config.EmbeddedMongoConfig;
-import com.postech.infra.dto.request.PagamentoRequestDTO;
 import com.postech.infra.persistence.repositories.PagamentoRepository;
-import com.postech.utils.PagamentoHelper;
+import com.postech.utils.TesteHelper;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.*;
@@ -17,8 +16,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.io.IOException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(EmbeddedMongoConfig.class)
@@ -36,8 +33,6 @@ class PagamentoControllerIT {
 
     @Autowired
     private PagamentoRepository pagamentoRepository;
-
-
 
     @BeforeEach
     public void setup() {
@@ -67,7 +62,7 @@ class PagamentoControllerIT {
     @Test
     void devePermitirCriarPagamento()  {
 
-        var pagamentoRequest = PagamentoHelper.gerarPagamentoRequest();
+        var pagamentoRequest = TesteHelper.gerarCriarPagamentoRequestDTO();
 
         RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -80,12 +75,12 @@ class PagamentoControllerIT {
 
     @Test
     void deveGerarExcecao_QuandoDerErroAoGerarPagamento()  {
-        var pagamentoRequest = PagamentoHelper.gerarPagamentoRequest();
-        pagamentoRequest.getPedidoDTO().setValorTotal(null);
+        var criarPagamentoRequestDTO = TesteHelper.gerarCriarPagamentoRequestDTO();
+        criarPagamentoRequestDTO.setValorTotal(null);
 
         RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(pagamentoRequest)
+                .body(criarPagamentoRequestDTO)
                 .when()
                 .post("/lanchonete/v1/pagamentos")
                 .then()
@@ -95,17 +90,14 @@ class PagamentoControllerIT {
 
     @Test
     void devePermitirPegarEstadoPagamento()  {
-        var pagamento = PagamentoHelper.gerarPagamentoEntidade();
+        var pagamento = TesteHelper.gerarPagamentoEntidade();
 
         pagamentoRepository.save(pagamento);
 
-        PagamentoRequestDTO pagamentoRequestDTO = PagamentoHelper.gerarPagamentoRequest();
-
         RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(pagamentoRequestDTO)
                 .when()
-                .get("/lanchonete/v1/pagamentos")
+                .get("/lanchonete/v1/pagamentos/{idPedido}", pagamento.getIdPedido())
                 .then()
                 .statusCode(HttpStatus.OK.value());
 
@@ -113,13 +105,10 @@ class PagamentoControllerIT {
 
     @Test
     void deveGerarExcecao_QuandoNaoAcharPagamento_PorIdPedido()   {
-        PagamentoRequestDTO pagamentoRequestDTO = PagamentoHelper.gerarPagamentoRequest();
-
         RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(pagamentoRequestDTO)
                 .when()
-                .get("/lanchonete/v1/pagamentos")
+                .get("/lanchonete/v1/pagamentos/{idPedido}", 1L)
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }

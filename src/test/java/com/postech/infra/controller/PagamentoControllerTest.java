@@ -8,10 +8,10 @@ import com.postech.domain.entities.Pagamento;
 import com.postech.domain.enums.ErroPagamentoEnum;
 import com.postech.domain.enums.EstadoPagamentoEnum;
 import com.postech.domain.exceptions.PagamentoException;
-import com.postech.infra.dto.request.PedidoRequestDTO;
+import com.postech.infra.dto.request.CriarPagamentoRequestDTO;
 import com.postech.infra.handler.PagamentoAdvice;
 import com.postech.infra.mappers.PagamentoMapper;
-import com.postech.utils.PagamentoHelper;
+import com.postech.utils.TesteHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,17 +67,17 @@ class PagamentoControllerTest {
     @Test
     void devePermitirCriarPagamento() throws Exception {
 
-        var pagamento = PagamentoHelper.gerarPagamento();
-        when(pagamentoUseCases.criarPagamentoPix(any(PedidoRequestDTO.class))).thenReturn(pagamento);
+        var pagamento = TesteHelper.gerarPagamento();
+        when(pagamentoUseCases.criarPagamentoPix(any(CriarPagamentoRequestDTO.class))).thenReturn(pagamento);
 
-        var pagamentoRequest = PagamentoHelper.gerarPagamentoRequest();
+        var criarPagamentoRequestDTO = TesteHelper.gerarCriarPagamentoRequestDTO();
 
-        var pagamentoResponseDTO = PagamentoHelper.gerarPagamentoResponse();
+        var pagamentoResponseDTO = TesteHelper.gerarPagamentoResponse();
         when(mapper.paraResponseDTO(any(Pagamento.class))).thenReturn(pagamentoResponseDTO);
 
         mockMvc.perform(post("/pagamentos")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(asJsonString(pagamentoRequest)))
+                    .content(asJsonString(criarPagamentoRequestDTO)))
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.valor").value(pagamentoResponseDTO.getValor().toString()))
                     .andExpect(jsonPath("$.estadoPagamento").value(pagamentoResponseDTO.getEstadoPagamento().toString()))
@@ -89,25 +89,25 @@ class PagamentoControllerTest {
                     .andExpect(jsonPath("$.pagamentoId").value(pagamentoResponseDTO.getPagamentoId()));
 
 
-        verify(pagamentoUseCases, times(1)).criarPagamentoPix(any(PedidoRequestDTO.class));
+        verify(pagamentoUseCases, times(1)).criarPagamentoPix(any(CriarPagamentoRequestDTO.class));
     }
 
     @Test
     void deveGerarExcecao_QuandoDerErroAoGerarPagamento() throws Exception {
 
 
-        when(pagamentoUseCases.criarPagamentoPix(any(PedidoRequestDTO.class))).thenThrow(new PagamentoException(ErroPagamentoEnum.ERRO_CRIAR_PAGAMENTO));
+        when(pagamentoUseCases.criarPagamentoPix(any(CriarPagamentoRequestDTO.class))).thenThrow(new PagamentoException(ErroPagamentoEnum.ERRO_CRIAR_PAGAMENTO));
 
-        var pagamentoRequest = PagamentoHelper.gerarPagamentoRequest();
+        var criarPagamentoRequestDTO = TesteHelper.gerarCriarPagamentoRequestDTO();
 
         mockMvc.perform(post("/pagamentos")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(pagamentoRequest)))
+                        .content(asJsonString(criarPagamentoRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.codigo").value(ErroPagamentoEnum.ERRO_CRIAR_PAGAMENTO.toString()))
                 .andExpect(jsonPath("$.detalhe").value(ErroPagamentoEnum.ERRO_CRIAR_PAGAMENTO.getDetalhe()));
 
-        verify(pagamentoUseCases, times(1)).criarPagamentoPix(any(PedidoRequestDTO.class));
+        verify(pagamentoUseCases, times(1)).criarPagamentoPix(any(CriarPagamentoRequestDTO.class));
     }
 
     @Test
@@ -115,13 +115,10 @@ class PagamentoControllerTest {
 
         when(pagamentoUseCases.getStatusPagamento(anyLong())).thenReturn(EstadoPagamentoEnum.PENDENTE_PAGAMENTO);
 
-        var pagamentoRequest = PagamentoHelper.gerarPagamentoRequest();
-
-        mockMvc.perform(get("/pagamentos")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(asJsonString(pagamentoRequest)))
+        mockMvc.perform(get("/pagamentos/{idPedido}", 1)
+                    .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$").value("O estado do pagamento informado é: " + EstadoPagamentoEnum.PENDENTE_PAGAMENTO));
+                    .andExpect(jsonPath("$").value(EstadoPagamentoEnum.PENDENTE_PAGAMENTO.toString()));
 
         verify(pagamentoUseCases, times(1)).getStatusPagamento(anyLong());
     }
@@ -131,11 +128,8 @@ class PagamentoControllerTest {
 
         when(pagamentoUseCases.getStatusPagamento(anyLong())).thenThrow(new PagamentoException(ErroPagamentoEnum.PAGAMENTO_NAO_ENCONTRADO_POR_ID_PEDIDO));
 
-        var pagamentoRequest = PagamentoHelper.gerarPagamentoRequest();
-
-        mockMvc.perform(get("/pagamentos")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(pagamentoRequest)))
+        mockMvc.perform(get("/pagamentos/{idPedido}", 1)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.codigo").value(ErroPagamentoEnum.PAGAMENTO_NAO_ENCONTRADO_POR_ID_PEDIDO.toString()))
                 .andExpect(jsonPath("$.detalhe").value(ErroPagamentoEnum.PAGAMENTO_NAO_ENCONTRADO_POR_ID_PEDIDO.getDetalhe()));

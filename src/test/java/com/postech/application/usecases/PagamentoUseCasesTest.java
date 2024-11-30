@@ -7,9 +7,8 @@ import com.postech.domain.enums.ErroPagamentoEnum;
 import com.postech.domain.enums.EstadoPagamentoEnum;
 import com.postech.domain.exceptions.PagamentoException;
 import com.postech.domain.interfaces.PagamentoInterface;
-import com.postech.infra.dto.request.ClienteRequestDTO;
-import com.postech.infra.dto.request.PedidoRequestDTO;
-import com.postech.utils.PagamentoHelper;
+import com.postech.infra.dto.request.CriarPagamentoRequestDTO;
+import com.postech.utils.TesteHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,8 +20,6 @@ import org.mockito.MockitoAnnotations;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
-
-import java.math.BigDecimal;
 
 class PagamentoUseCasesTest {
 
@@ -54,17 +51,17 @@ class PagamentoUseCasesTest {
 
     @Test
     void deveCriarPagamentoPix(){
-        PedidoRequestDTO pedidoRequestDTO = new PedidoRequestDTO(1L, BigDecimal.valueOf(5.0), new ClienteRequestDTO("teste@teste.com", "João", "12345678901"));
+        CriarPagamentoRequestDTO criarPagamentoRequestDTO = TesteHelper.gerarCriarPagamentoRequestDTO();
 
-        Pagamento pagamento = PagamentoHelper.gerarPagamento();
+        Pagamento pagamento = TesteHelper.gerarPagamento();
 
-        when(pagamentoExternoUseCase.criarPagamento(pedidoRequestDTO)).thenReturn(pagamento);
+        when(pagamentoExternoUseCase.criarPagamento(criarPagamentoRequestDTO)).thenReturn(pagamento);
 
         when(repositorio.salvaPagamento(pagamento)).thenReturn(pagamento);
 
-        Pagamento pagamentoSalvo = pagamentoUseCases.criarPagamentoPix(pedidoRequestDTO);
+        Pagamento pagamentoSalvo = pagamentoUseCases.criarPagamentoPix(criarPagamentoRequestDTO);
 
-        verify(pagamentoExternoUseCase, times(1)).criarPagamento(pedidoRequestDTO);
+        verify(pagamentoExternoUseCase, times(1)).criarPagamento(criarPagamentoRequestDTO);
 
         verify(repositorio, times(1)).salvaPagamento(pagamento);
 
@@ -109,23 +106,23 @@ class PagamentoUseCasesTest {
 
     @Test
     void deveLancarException_QuandoDerErro_AoCriarPagamentoPix() {
-        var pedidoRequestDTO = new PedidoRequestDTO(1L, BigDecimal.valueOf(5.0), new ClienteRequestDTO("teste@teste.com", "João", "12345678901"));
+        var criarPagamentoRequestDTO = TesteHelper.gerarCriarPagamentoRequestDTO();
 
-        var pagamento = PagamentoHelper.gerarPagamento();
+        var pagamento = TesteHelper.gerarPagamento();
 
-        when(pagamentoExternoUseCase.criarPagamento(pedidoRequestDTO)).thenThrow(new PagamentoException(ErroPagamentoEnum.ERRO_CRIAR_PAGAMENTO));
+        when(pagamentoExternoUseCase.criarPagamento(criarPagamentoRequestDTO)).thenThrow(new PagamentoException(ErroPagamentoEnum.ERRO_CRIAR_PAGAMENTO));
 
-        assertThatThrownBy(() -> pagamentoUseCases.criarPagamentoPix(pedidoRequestDTO))
+        assertThatThrownBy(() -> pagamentoUseCases.criarPagamentoPix(criarPagamentoRequestDTO))
                 .isInstanceOf(PagamentoException.class);
 
-        verify(pagamentoExternoUseCase, times(1)).criarPagamento(pedidoRequestDTO);
+        verify(pagamentoExternoUseCase, times(1)).criarPagamento(criarPagamentoRequestDTO);
 
         verify(repositorio, never()).salvaPagamento(pagamento);
     }
 
     @Test
     void devePegarStatusPorIdPedido() {
-        var pagamento = PagamentoHelper.gerarPagamento();
+        var pagamento = TesteHelper.gerarPagamento();
 
         when(repositorio.consultaPagamentoPorIdPedido(any(Long.class))).thenReturn(pagamento);
 
@@ -142,7 +139,7 @@ class PagamentoUseCasesTest {
 
     @Test
     void deveLancarException_QuandoNaoEncontrarStatusPagamentoPorIdPedido() {
-        var pagamento = PagamentoHelper.gerarPagamento();
+        var pagamento = TesteHelper.gerarPagamento();
 
         when(repositorio.consultaPagamentoPorIdPedido(any(Long.class))).thenReturn(null);
 
@@ -153,7 +150,7 @@ class PagamentoUseCasesTest {
 
     @Test
     void devePegarPagamentoPorIdPagamento() {
-        var pagamento = PagamentoHelper.gerarPagamento();
+        var pagamento = TesteHelper.gerarPagamento();
 
         when(repositorio.consultaPagamentoPorIdPagamento(any(String.class))).thenReturn(pagamento);
 
@@ -202,7 +199,7 @@ class PagamentoUseCasesTest {
 
     @Test
     void deveLancarException_QuandoNaoEncontrarPagamentoPorIdPagamento() {
-        var pagamento = PagamentoHelper.gerarPagamento();
+        var pagamento = TesteHelper.gerarPagamento();
 
         when(repositorio.consultaPagamentoPorIdPagamento(any(String.class))).thenReturn(null);
 
@@ -214,9 +211,9 @@ class PagamentoUseCasesTest {
 
     @Test
     void deveAtualizarEstadoPagamento(){
-        var pagamento = PagamentoHelper.gerarPagamento();
+        var pagamento = TesteHelper.gerarPagamento();
 
-        var notificacaoPagamento = PagamentoHelper.gerarNotificacaoPagamentoPago();
+        var notificacaoPagamento = TesteHelper.gerarNotificacaoPagamentoPago();
 
         when(repositorio.consultaPagamentoPorIdPagamento(any(String.class))).thenReturn(pagamento);
 

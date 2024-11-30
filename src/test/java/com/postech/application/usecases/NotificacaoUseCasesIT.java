@@ -5,16 +5,10 @@ import com.postech.config.EmbeddedMongoConfig;
 import com.postech.domain.entities.Pagamento;
 import com.postech.domain.enums.EstadoPagamentoEnum;
 import com.postech.domain.interfaces.NotificacaoExternoInterface;
-import com.postech.infra.client.PedidoClienteImpl;
 import com.postech.infra.gateways.RepositorioDePagamentoImpl;
-import com.postech.infra.persistence.repositories.PagamentoRepository;
-import com.postech.utils.PagamentoHelper;
+import com.postech.utils.TesteHelper;
 import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodStarter;
 import org.junit.jupiter.api.*;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,7 +17,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -78,7 +71,7 @@ class NotificacaoUseCasesIT {
     @Test
     void deveAtualizarStatusPagamento(){
 
-        var pagamento = PagamentoHelper.gerarPagamento();
+        var pagamento = TesteHelper.gerarPagamento();
 
         repositorioDePagamento.salvaPagamento(pagamento);
 

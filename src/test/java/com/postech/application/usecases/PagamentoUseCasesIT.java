@@ -8,9 +8,7 @@ import com.postech.domain.enums.EstadoPagamentoEnum;
 import com.postech.domain.enums.TipoMetodoPagamento;
 import com.postech.domain.enums.TipoPagamentoEnum;
 import com.postech.domain.exceptions.PagamentoException;
-import com.postech.infra.dto.request.ClienteRequestDTO;
-import com.postech.infra.dto.request.PedidoRequestDTO;
-import com.postech.utils.PagamentoHelper;
+import com.postech.utils.TesteHelper;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,9 +65,9 @@ class PagamentoUseCasesIT {
 
     @Test
     void deveCriarPagamentoPix(){
-        var pedidoRequestDTO = PagamentoHelper.gerarPedidoRequest();
+        var criarPagamentoRequestDTO = TesteHelper.gerarCriarPagamentoRequestDTO();
 
-        var pagamentoSalvo = pagamentoUseCases.criarPagamentoPix(pedidoRequestDTO);
+        var pagamentoSalvo = pagamentoUseCases.criarPagamentoPix(criarPagamentoRequestDTO);
 
         assertThat(pagamentoSalvo)
                 .isInstanceOf(Pagamento.class)
@@ -77,7 +75,7 @@ class PagamentoUseCasesIT {
 
         assertThat(pagamentoSalvo)
                 .extracting(Pagamento::getValor)  // Extrai o valor
-                .isEqualTo(pedidoRequestDTO.getValorTotal().doubleValue());
+                .isEqualTo(criarPagamentoRequestDTO.getValorTotal());
 
         assertThat(pagamentoSalvo)
                 .extracting(Pagamento::getEstadoPagamento)
@@ -110,16 +108,17 @@ class PagamentoUseCasesIT {
 
     @Test
     void deveLancarException_QuandoDerErro_AoCriarPagamentoPix() {
-        var pedidoRequestDTO = new PedidoRequestDTO(1L, null, new ClienteRequestDTO("teste@teste.com", "Test", "19119119100"));
+        var criarPagamentoRequestDTO = TesteHelper.gerarCriarPagamentoRequestDTO();
+        criarPagamentoRequestDTO.setValorTotal(null);
 
-        assertThatThrownBy(() -> pagamentoUseCases.criarPagamentoPix(pedidoRequestDTO))
+        assertThatThrownBy(() -> pagamentoUseCases.criarPagamentoPix(criarPagamentoRequestDTO))
                 .isInstanceOf(PagamentoException.class);
 
     }
 
     @Test
     void devePegarStatusPorIdPedido() {
-        var pagamento = PagamentoHelper.gerarPagamento();
+        var pagamento = TesteHelper.gerarPagamento();
 
         repositorioDePagamentoImpl.salvaPagamento(pagamento);
 
@@ -138,7 +137,7 @@ class PagamentoUseCasesIT {
 
     @Test
     void devePegarPagamentoPorIdPagamento() {
-        var pagamento = PagamentoHelper.gerarPagamento();
+        var pagamento = TesteHelper.gerarPagamento();
 
         repositorioDePagamentoImpl.salvaPagamento(pagamento);
 
@@ -188,11 +187,11 @@ class PagamentoUseCasesIT {
 
     @Test
     void deveAtualizarEstadoPagamento(){
-        var pagamento = PagamentoHelper.gerarPagamento();
+        var pagamento = TesteHelper.gerarPagamento();
 
         repositorioDePagamentoImpl.salvaPagamento(pagamento);
 
-        var notificacaoPagamento = PagamentoHelper.gerarNotificacaoPagamentoPago();
+        var notificacaoPagamento = TesteHelper.gerarNotificacaoPagamentoPago();
 
         pagamentoUseCases.atualizaEstadoPagamento(notificacaoPagamento);
 
