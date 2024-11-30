@@ -12,7 +12,7 @@ public class PedidoConfiguration {
     private String pedidoUrl;
 
     @Bean
-    PedidoClienteImpl pedidoClient() {
+    public PedidoClienteImpl pedidoClient() {
         return new PedidoClienteImpl(pedidoUrl);
     }
 }

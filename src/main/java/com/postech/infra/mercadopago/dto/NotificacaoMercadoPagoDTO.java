@@ -29,7 +29,7 @@ public class NotificacaoMercadoPagoDTO {
                   @JsonProperty("data") JsonNode data) {
         this.acao = acao;
         this.dataCriada = dataCriada.toLocalDate();
-        this.pagamentoId = data != null ? data.get("id").asText() : null;
+        this.pagamentoId = (data != null && data.has("id")) ? data.get("id").asText() : null;
     }
 
 }

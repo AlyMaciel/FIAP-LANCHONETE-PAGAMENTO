@@ -1,9 +1,13 @@
 package com.postech.infra.mercadopago.usecases;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.postech.domain.enums.EstadoPagamentoEnum;
+import com.postech.infra.mercadopago.dto.NotificacaoMercadoPagoDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,6 +56,40 @@ class NotificacaoMercadoPagoUseCaseTest {
         assertNull(notificacaoPagamento.getDataAttPagamento());
         assertNull(notificacaoPagamento.getPagamentoId());
 
+    }
 
+
+    @Test
+    void testJsonCreator() throws Exception {
+        String jsonString = "{\"action\":\"payment.updated\",\"date_created\":\"2024-07-29T22:00:00\",\"data\":{\"id\":\"84010825764\"}}";
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(jsonString);
+
+        NotificacaoMercadoPagoDTO dto = new NotificacaoMercadoPagoDTO(
+                jsonNode.get("action").asText(),
+                LocalDateTime.parse(jsonNode.get("date_created").asText()),
+                jsonNode.get("data")
+        );
+
+        assertEquals("payment.updated", dto.getAcao());
+        assertEquals(LocalDateTime.of(2024, 7, 29, 22, 0).toLocalDate(), dto.getDataCriada());
+        assertEquals("84010825764", dto.getPagamentoId());
+    }
+
+    @Test
+    void testJsonCreator_NullData() throws Exception {
+        String jsonString = "{\"action\":\"payment.updated\",\"date_created\":\"2024-07-29T22:00:00\",\"data\":{}}";
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(jsonString);
+
+        NotificacaoMercadoPagoDTO dto = new NotificacaoMercadoPagoDTO(
+                jsonNode.get("action").asText(),
+                LocalDateTime.parse(jsonNode.get("date_created").asText()),
+                jsonNode.get("data")
+        );
+
+        assertEquals("payment.updated", dto.getAcao());
+        assertEquals(LocalDateTime.of(2024, 7, 29, 22, 0).toLocalDate(), dto.getDataCriada());
+        assertNull(dto.getPagamentoId());
     }
 }

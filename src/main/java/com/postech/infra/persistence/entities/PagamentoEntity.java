@@ -1,5 +1,6 @@
 package com.postech.infra.persistence.entities;
 
+import com.google.common.base.Objects;
 import com.postech.domain.enums.EstadoPagamentoEnum;
 import com.postech.domain.enums.TipoMetodoPagamento;
 import com.postech.domain.enums.TipoPagamentoEnum;
@@ -55,6 +56,16 @@ public class PagamentoEntity {
     @Enumerated(EnumType.STRING)
     private TipoPagamentoEnum tipoPagamento;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PagamentoEntity that)) return false;
+        return Objects.equal(id, that.id) && Objects.equal(valor, that.valor) && estadoPagamento == that.estadoPagamento && Objects.equal(idPedido, that.idPedido) && Objects.equal(dataPagamento, that.dataPagamento) && Objects.equal(dataCriacaoPagamento, that.dataCriacaoPagamento) && metodoPagamento == that.metodoPagamento && Objects.equal(qrCode, that.qrCode) && Objects.equal(pagamentoId, that.pagamentoId) && tipoPagamento == that.tipoPagamento;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, valor, estadoPagamento, idPedido, dataPagamento, dataCriacaoPagamento, metodoPagamento, qrCode, pagamentoId, tipoPagamento);
+    }
 }
 

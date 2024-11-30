@@ -92,4 +92,32 @@ class PagamentoTest {
 
 
 
+    @Test
+    void deveTestarEqualsEHashCode() {
+        var objectId = new ObjectId();
+        var data = LocalDate.now();
+        var pagamento1 = new Pagamento(objectId, 5.0, EstadoPagamentoEnum.PENDENTE_PAGAMENTO, 1L, data, data, TipoMetodoPagamento.PIX, "123456", TipoPagamentoEnum.MERCADO_PAGO, "1");
+        var pagamento2 = new Pagamento(objectId, 5.0, EstadoPagamentoEnum.PENDENTE_PAGAMENTO, 1L, data, data, TipoMetodoPagamento.PIX, "123456", TipoPagamentoEnum.MERCADO_PAGO, "1");
+
+        Assertions.assertEquals(pagamento1, pagamento2);
+        Assertions.assertEquals(pagamento1.hashCode(), pagamento2.hashCode());
+        Assertions.assertNotEquals(null, pagamento1);
+    }
+
+    @Test
+    void deveTestarToString() {
+        var objectId = new ObjectId();
+        var data = LocalDate.now();
+        var pagamento = new Pagamento(objectId, 5.0, EstadoPagamentoEnum.PENDENTE_PAGAMENTO, 1L, data, data, TipoMetodoPagamento.PIX, "123456", TipoPagamentoEnum.MERCADO_PAGO, "1");
+
+        String expectedString = "Pagamento{valor=5.0, estadoPagamento=PENDENTE_PAGAMENTO, idPedido=1, dataPagamento=" + data + ", dataCriacaoPagamento=" + data + ", tipoPagamento=MERCADO_PAGO, metodoPagamento=PIX, qrCode='123456', pagamentoId='1'}";
+        Assertions.assertEquals(expectedString, pagamento.toString());
+    }
+
+
+
+
+
+
+
 }

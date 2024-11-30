@@ -110,8 +110,7 @@ public class Pagamento {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Pagamento pagamento = (Pagamento) o;
+        if (!(o instanceof Pagamento pagamento)) return false;
         return Objects.equal(id, pagamento.id) && Objects.equal(valor, pagamento.valor) && estadoPagamento == pagamento.estadoPagamento && Objects.equal(idPedido, pagamento.idPedido) && Objects.equal(dataPagamento, pagamento.dataPagamento) && Objects.equal(dataCriacaoPagamento, pagamento.dataCriacaoPagamento) && tipoPagamento == pagamento.tipoPagamento && metodoPagamento == pagamento.metodoPagamento && Objects.equal(qrCode, pagamento.qrCode) && Objects.equal(pagamentoId, pagamento.pagamentoId);
     }
 
