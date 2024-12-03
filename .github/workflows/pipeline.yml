@@ -110,11 +110,8 @@ jobs:
       # Step 9: Setar valores das variáveis nos arquivos do Kubernetes
       - name: Replace environment variables in k8s files
         run: |
-          sed -i "s/{{DB_URL}}/${{ secrets.DB_URL }}/g" k8s/secret-postgres-db.yaml
-          sed -i "s/{{DB_USER}}/${{ secrets.DB_USER }}/g" k8s/secret-postgres-db.yaml
-          sed -i "s/{{DB_PASSWORD}}/${{ secrets.DB_PASSWORD }}/g" k8s/secret-postgres-db.yaml
-          sed -i "s/{{DB_NAME}}/${{ secrets.DB_NAME }}/g" k8s/secret-postgres-db.yaml
-          sed -i "s/{{DB_PORT}}/${{ secrets.DB_PORT }}/g" k8s/secret-postgres-db.yaml
+          sed -i "s/{{DB_URL}}/${{ secrets.MONGO_URI }}/g" k8s/secret-mongo-db.yaml
+          sed -i "s/{{DB_USER}}/${{ secrets.MONGO_DB_NAME }}/g" k8s/secret-mongo-db.yaml
           sed -i "s/{{ACCOUNT_ID}}/${{ secrets.ACCOUNT_ID }}/g" k8s/deployment.yaml
           sed -i "s/{{AWS_REGION}}/${{ secrets.AWS_REGION }}/g" k8s/deployment.yaml
           sed -i "s/{{ECR_REPOSITORY}}/${{ secrets.ECR_REPOSITORY }}/g" k8s/deployment.yaml
@@ -122,25 +119,25 @@ jobs:
       # Step 10: Aplicar secrets no Kubernetes
       - name: Apply Kubernetes secrets
         run: |
-          kubectl apply -f k8s/secret-postgres-db.yaml
+          kubectl apply -f k8s/secret-mongo-db.yaml
 
       # Step 11: Deletar os pods existentes para forçar a criação de novos
       - name: Delete existing pods
         run: |
-          kubectl delete pod -l app=deployment-restaurant-application
+          kubectl delete pod -l app=deployment-pagamento-application
 
       # Step 12: Realizar deploy de imagem do ecs no cluster eks
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f k8s/deployment.yaml
-          kubectl apply -f k8s/svc-restaurant-application.yaml
+          kubectl apply -f k8s/svc-pagamento-application.yaml
           kubectl apply -f k8s/hpa.yaml
-          kubectl set image deployment/deployment-restaurant-application deployment-restaurant-application=${{ secrets.ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+          kubectl set image deployment/deployment-pagamento-application deployment-pagamento-application=${{ secrets.ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
 
       # Step 13: Esperar até que o LoadBalancer seja criado
       - name: Wait for LoadBalancer
         run: |
-          while [[ -z $(kubectl get svc restaurant-application-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}') ]]; do
+          while [[ -z $(kubectl get svc restaurant-pagamento-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}') ]]; do
             echo "Waiting for LoadBalancer..."
             sleep 10
           done
@@ -148,6 +145,6 @@ jobs:
       # Step 14: Obter URL do LoadBalancer
       - name: Get LoadBalancer URL
         run: |
-          LOAD_BALANCER_URL=$(kubectl get svc restaurant-application-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+          LOAD_BALANCER_URL=$(kubectl get svc restaurant-pagamento-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
           echo "LoadBalancer URL: $LOAD_BALANCER_URL"
 
