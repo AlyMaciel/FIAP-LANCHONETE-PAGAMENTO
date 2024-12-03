@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: restaurant-application-service
+  name: restaurant-pagamento-service
 spec:
   type: LoadBalancer
   ports:
