@@ -39,7 +39,7 @@ jobs:
     name: SonarQube Cloud
     needs: unit-test
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' }} # execução no evento de pull request
+    # if: ${{ github.event_name == 'pull_request' }} # execução no evento de pull request
     steps:
       - uses: actions/checkout@v4
         with:
