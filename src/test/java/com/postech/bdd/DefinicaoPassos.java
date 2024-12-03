@@ -2,7 +2,6 @@ package com.postech.bdd;
 
 import com.postech.infra.dto.response.PagamentoResponseDTO;
 import com.postech.utils.TesteHelper;
-import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.Então;
 import io.cucumber.java.pt.Quando;
 import io.restassured.response.Response;
@@ -15,12 +14,15 @@ public class DefinicaoPassos {
 
     private Response response;
 
-    private PagamentoResponseDTO pagamentoResponse;
+    private final String BASE_URL = System.getenv("BASE_URL") != null
+            ? System.getenv("BASE_URL")
+            : "AAAAAAA";
 
     @Quando("submeter um novo pagamento")
     public PagamentoResponseDTO submeterNovoPagamento() {
         var criarPagamentoRequestDTO = TesteHelper.gerarCriarPagamentoRequestDTO();
         response = given()
+                .baseUri(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(criarPagamentoRequestDTO)
                 .when().post("/pagamentos");
@@ -34,22 +36,5 @@ public class DefinicaoPassos {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @Dado("que um pagamento já foi realizado")
-    public void pagamentoJaCriado() {
-        pagamentoResponse = submeterNovoPagamento();
-    }
 
-    @Quando("requisitar a busca do estado do pagamento")
-    public void requisitarBuscarEstadoPagamento() {
-        response = given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .get("/pagamentos/{idPedido}", pagamentoResponse.getIdPedido());
-    }
-
-    @Então("o estado do pagamento é exibido com sucesso")
-    public void estadoPagamentoExibidoComSucesso() {
-        response.then()
-                .statusCode(HttpStatus.OK.value());
-    }
 }

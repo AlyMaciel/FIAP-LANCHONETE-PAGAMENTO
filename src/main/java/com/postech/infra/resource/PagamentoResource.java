@@ -32,8 +32,7 @@ public interface PagamentoResource {
             @ApiResponse(description = "Estado do pagamento encontrado com sucesso", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CriarPagamentoRequestDTO.class))),
             @ApiResponse(responseCode = "400", description = "Erro ao procurar estado do pagamento", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErroDTO.class))),
     })
-    @GetMapping(value = "/{idPedido}", consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{idPedido}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Object> getEstadoPagamento(@PathVariable Long idPedido);
 
 
