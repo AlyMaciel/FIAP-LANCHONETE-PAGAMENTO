@@ -24,6 +24,19 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests=true
 
+
+      - name: Check test coverage
+        run: |
+          COVERAGE=$(xmllint --xpath 'string(//counter[@type="LINE"]/@covered)' target/site/jacoco/jacoco.xml)
+          MISSED=$(xmllint --xpath 'string(//counter[@type="LINE"]/@missed)' target/site/jacoco/jacoco.xml)
+          TOTAL=$((COVERAGE + MISSED))
+          PERCENTAGE=$((COVERAGE * 100 / TOTAL))
+          echo "Test coverage: $PERCENTAGE%"
+          if [ "$PERCENTAGE" -lt 80 ]; then
+            echo "Test coverage is below 80%! Current: $PERCENTAGE%"
+            exit 1
+          fi
+
   unit-test:
         needs: build-app
         runs-on: ubuntu-latest
