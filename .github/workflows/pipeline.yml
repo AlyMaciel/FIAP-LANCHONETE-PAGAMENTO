@@ -92,11 +92,11 @@ jobs:
       # Step 9: Setar valores das variáveis nos arquivos do Kubernetes
       - name: Replace environment variables in k8s files
         run: |
-          sed -i "s/{{MONGO_URI}}/${{ secrets.MONGO_URI }}/g" k8s/secret-mongo-db.yaml
-          sed -i "s/{{MONGO_DB_NAME}}/${{ secrets.MONGO_DB_NAME }}/g" k8s/secret-mongo-db.yaml
-          sed -i "s/{{ACCOUNT_ID}}/${{ secrets.ACCOUNT_ID }}/g" k8s/deployment.yaml
-          sed -i "s/{{AWS_REGION}}/${{ secrets.AWS_REGION }}/g" k8s/deployment.yaml
-          sed -i "s/{{ECR_REPOSITORY}}/${{ secrets.ECR_REPOSITORY }}/g" k8s/deployment.yaml
+          sed -i "s/{{MONGO_URI}}/${MONGO_URI }/g" k8s/secret-mongo-db.yaml
+          sed -i "s/{{MONGO_DB_NAME}}/${MONGO_DB_NAME}/g" k8s/secret-mongo-db.yaml
+          sed -i "s/{{ACCOUNT_ID}}/${ACCOUNT_ID }/g" k8s/deployment.yaml
+          sed -i "s/{{AWS_REGION}}/${AWS_REGION}/g" k8s/deployment.yaml
+          sed -i "s/{{ECR_REPOSITORY}}/${ECR_REPOSITORY}/g" k8s/deployment.yaml
 
       # Step 10: Aplicar secrets no Kubernetes
       - name: Apply Kubernetes secrets
