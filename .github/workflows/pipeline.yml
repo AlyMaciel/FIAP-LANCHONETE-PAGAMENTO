@@ -114,9 +114,10 @@ jobs:
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/svc-pagamento-application.yaml
           kubectl apply -f k8s/hpa.yaml
-          kubectl set image deployment/deployment-pagamento-application deployment-pagamento-application=${{ secrets.ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+          kubectl set image deployment/deployment-pagamento-application \
+          deployment-pagamento-application=${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:latest
 
-      # Step 13: Esperar até que o LoadBalancer seja criado
+  # Step 13: Esperar até que o LoadBalancer seja criado
       - name: Wait for LoadBalancer
         run: |
           while [[ -z $(kubectl get svc restaurant-pagamento-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}') ]]; do
