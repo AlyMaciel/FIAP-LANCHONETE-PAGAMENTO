@@ -16,7 +16,7 @@ public class DefinicaoPassos {
 
     private final String BASE_URL = System.getenv("BASE_URL") != null
             ? System.getenv("BASE_URL")
-            : "AAAAAAA";
+            : "http://localhost:8080/lanchonete/v1";
 
     @Quando("submeter um novo pagamento")
     public PagamentoResponseDTO submeterNovoPagamento() {
