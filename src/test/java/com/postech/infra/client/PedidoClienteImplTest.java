@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 
 import java.time.LocalDate;
@@ -49,7 +50,7 @@ class PedidoClienteImplTest {
     void enviaEstadoPagamento_WebClientResponseException() {
         when(responseSpec.toBodilessEntity()).thenThrow(WebClientRequestException.class);
 
-        assertThrows(WebClientRequestException.class, () ->
+        assertThrows(WebClientResponseException.class, () ->
                 pedidoCliente.enviaEstadoPagamento(1L, EstadoPagamentoEnum.PAGO, LocalDate.now())
         );
 
