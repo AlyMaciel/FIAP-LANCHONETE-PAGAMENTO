@@ -27,6 +27,8 @@ public class DefinicaoPassos {
                 .body(criarPagamentoRequestDTO)
                 .when().post("/pagamentos");
 
+        response.then().log().all();
+
         return response.then().extract().as(PagamentoResponseDTO.class);
     }
 
