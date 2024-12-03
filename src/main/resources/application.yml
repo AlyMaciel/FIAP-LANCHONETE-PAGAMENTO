@@ -1,0 +1,25 @@
+# application.yml
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: "/lanchonete/v1"
+
+spring:
+  application:
+    name: pagamento-ms
+  data:
+    mongodb:
+      uri: ${MONGO_URI:mongodb://localhost:27017/fiap-pagamento}
+      database: ${MONGO_DB_NAME:fiap-pagamento}
+
+
+backend:
+  pedido:
+    url: ${PEDIDO_URL:http://localhost:8080/lanchonete/v1/pedidos}
+
+# swagger-ui and api-docs custom path
+springdoc:
+  swagger-ui:
+    path: "/swagger-ui"
+  api-docs:
+    path: "/api-docs"
