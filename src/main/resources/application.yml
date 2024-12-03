@@ -12,7 +12,6 @@ spring:
       uri: ${MONGO_URI:mongodb://localhost:27017/fiap-pagamento}
       database: ${MONGO_DB_NAME:fiap-pagamento}
 
-
 backend:
   pedido:
     url: ${PEDIDO_URL:http://localhost:8080/lanchonete/v1/pedidos}
