@@ -1,0 +1,84 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:108782076074:task-definition/ms-pagamento:1",
+    "containerDefinitions": [
+        {
+            "name": "ms-pagamento-container",
+            "image": "108782076074.dkr.ecr.us-east-1.amazonaws.com/ecr-repository-ms-pagamento:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "ms-pagamento-container-8080-tcp",
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "PORT",
+                    "value": "{{PORT}}"
+                },
+                {
+                    "name": "MONGO_DB_NAME",
+                    "value": "{{MONGO_DB_NAME}}"
+                },
+                {
+                    "name": "PEDIDO_URL",
+                    "value": "{{PEDIDO_URL}}"
+                },
+                {
+                    "name": "MONGO_URI",
+                    "value": "{{MONGO_URI}}"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "systemControls": []
+        }
+    ],
+    "family": "ms-pagamento",
+    "taskRoleArn": "arn:aws:iam::108782076074:role/ms-pagamento-rule",
+    "executionRoleArn": "arn:aws:iam::108782076074:role/ms-pagamento-rule",
+    "networkMode": "awsvpc",
+    "revision": 1,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "6144",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2024-12-04T00:58:00.939Z",
+    "registeredBy": "arn:aws:iam::108782076074:root",
+    "tags": []
+}
